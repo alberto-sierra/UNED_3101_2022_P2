@@ -1,0 +1,51 @@
+@model IEnumerable<_3101_proyecto1.Models.EspecialistumViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de Especialistas";
+}
+
+<h1>Gestión de Especialistas</h1>
+@if (ViewBag.mensaje != null)
+{
+    <h4 class="danger">@ViewBag.mensaje</h4>
+}
+<p>
+    <a asp-action="Create">Nuevo Especialista</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioConsulta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreEspecialidad)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecioConsulta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreEspecialidad)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modificar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Ver Detalle</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

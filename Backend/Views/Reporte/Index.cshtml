@@ -1,0 +1,65 @@
+﻿@model _3101_proyecto1.Models.ReporteEstadisticaViewModel
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<h1>Estadísticas</h1>
+@if (Model.EstadisticaEspecialista != null)
+{
+    <hr />
+    <h3>Porcentaje de atención por especialista</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Especialista</th>
+                <th>Porcentaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.EstadisticaEspecialista)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Porcentaje)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.EstadisticaEspecialidad != null)
+{
+    <hr />
+    <h3>Porcentaje de atención por especialidad</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Especialidad</th>
+                <th>Porcentaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.EstadisticaEspecialidad)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Porcentaje)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

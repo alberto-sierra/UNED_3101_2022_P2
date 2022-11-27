@@ -1,0 +1,37 @@
+@model _3101_proyecto1.Models.ReservaConsultorioViewModel
+
+@{
+    ViewData["Title"] = "Reserva de Consultorios";
+}
+
+<h2>Reserva de Consultorio - Paso 1</h2>
+@if (ViewBag.mensaje != null)
+{
+    <h4 class="danger">@ViewBag.mensaje</h4>
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdConsultorio" class="control-label"></label>
+                <select asp-for="IdConsultorio" class="form-control" asp-items="@Model.ListaItems">
+                    <option value="">Seleccione el consultorio</option>
+                </select>
+                <span asp-validation-for="IdConsultorio" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Siguiente" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Cancelar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

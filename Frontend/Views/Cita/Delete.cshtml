@@ -1,0 +1,38 @@
+﻿@model _3101_proyecto1.FrontEnd.Models.CitumViewModel
+
+@{
+    ViewData["Title"] = "Gestión de Citas";
+}
+
+<h3>Confirmación</h3>
+@if (ViewBag.error != null)
+{
+    <h4 class="danger">@ViewBag.error</h4>
+    <a asp-action="Index">Regresar</a>
+}
+else
+{
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HoraInicio)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HoraInicio)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NombreEspecialista)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NombreEspecialista)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            <a asp-action="Index">Regresar</a>
+        </form>
+    </div>
+}

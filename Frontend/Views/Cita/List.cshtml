@@ -1,0 +1,46 @@
+@model IEnumerable<_3101_proyecto1.FrontEnd.Models.CitumViewModel>
+
+@{
+    ViewData["Title"] = "Mis Citas";
+}
+
+<h1>Mis Citas</h1>
+@if (ViewBag.mensaje != null)
+{
+    <h4 class="danger">@ViewBag.mensaje</h4>
+}
+@if (ViewBag.IdPaciente != null)
+{
+    <p>
+        <a asp-action="Create" asp-route-id="@ViewBag.IdPaciente">Nueva Cita</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HoraInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreEspecialista)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoraInicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreEspecialista)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Cita</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

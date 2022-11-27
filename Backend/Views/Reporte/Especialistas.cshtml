@@ -1,0 +1,44 @@
+﻿@model IEnumerable<_3101_proyecto1.Models.EspecialistumViewModel>
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<h1>Reporte de Pacientes</h1>
+<hr />
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Identificacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Identificacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index">Regresar</a>
+<br />
+<a asp-action="DescargaEspecialistas">Descargar Reporte</a>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,41 @@
+﻿@model _3101_proyecto1.Models.ReporteIngresoViewModel
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<h1>Reporte de Ingresos</h1>
+<hr />
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CitasCantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IngresoTotal)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.CitasCantidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.IngresoTotal)
+                </td>
+            </tr>
+    </tbody>
+</table>
+
+<a asp-action="Index">Regresar</a>
+<br />
+<a asp-action="DescargaIngresos">Descargar Reporte</a>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

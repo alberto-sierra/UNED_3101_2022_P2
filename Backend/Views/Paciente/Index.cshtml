@@ -1,0 +1,45 @@
+@model IEnumerable<_3101_proyecto1.Models.PacienteViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de Pacientes";
+}
+
+<h1>Gestión de Pacientes</h1>
+@if (ViewBag.mensaje != null)
+    {
+        <h4 class="danger">@ViewBag.mensaje</h4>
+    }
+
+<p>
+    <a asp-action="Create">Crear Paciente</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Identificacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreCompleto)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Identificacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreCompleto)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Modificar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Ver Detalle</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
