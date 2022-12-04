@@ -1,4 +1,4 @@
-@model IEnumerable<_3101_proyecto1.Models.ReservaConsultorioViewModel>
+@model IEnumerable<Backend.Models.ReservaConsultorioViewModel>
 
 @{
     ViewData["Title"] = "Reserva de Consultorios";
@@ -16,6 +16,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.DiaSemana)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.HoraInicio)
             </th>
             <th>
@@ -31,6 +34,32 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @{
+                        var nombreDia = "";
+                        switch (item.DiaSemana)
+                        {
+                            case 0:
+                                nombreDia = "Lunes";
+                                break;
+                            case 1:
+                                nombreDia = "Martes";
+                                break;
+                            case 2:
+                                nombreDia = "Miércoles";
+                                break;
+                            case 3:
+                                nombreDia = "Jueves";
+                                break;
+                            case 4:
+                                nombreDia = "Viernes";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    @nombreDia
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.HoraInicio)
                 </td>

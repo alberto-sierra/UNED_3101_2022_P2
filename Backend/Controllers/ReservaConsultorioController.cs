@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using _3101_proyecto1.Entities;
-using _3101_proyecto1.Models;
+using Backend.Entities;
+using Backend.Models;
 
 namespace Backend.Controllers
 {
@@ -117,7 +117,7 @@ namespace Backend.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdConsultorio")] ReservaConsultorioViewModel reservaViewModel)
+        public async Task<IActionResult> Create([Bind("IdConsultorio,DiaSemana")] ReservaConsultorioViewModel reservaViewModel)
         {
 
             var horasDisponibles = horasPublico;
@@ -126,7 +126,8 @@ namespace Backend.Controllers
             {
 
                 var reservas = await _context.ReservaConsultorios
-                .Where(x => x.IdConsultorio == reservaViewModel.IdConsultorio)
+                .Where(x => x.IdConsultorio == reservaViewModel.IdConsultorio
+                && x.DiaSemana == reservaViewModel.DiaSemana)
                 .Select(x => new ReservaConsultorioViewModel
                 {
                     IdConsultorio = x.IdConsultorio,
@@ -165,7 +166,7 @@ namespace Backend.Controllers
         // POST: ReservaConsultorio/Create2
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create2([Bind("IdConsultorio,NumeroConsultorio,HoraSeleccionada")] ReservaConsultorioViewModel reservaViewModel)
+        public async Task<IActionResult> Create2([Bind("IdConsultorio,DiaSemana,NumeroConsultorio,HoraSeleccionada")] ReservaConsultorioViewModel reservaViewModel)
         {
 
             try
@@ -196,7 +197,8 @@ namespace Backend.Controllers
                     .ToListAsync();
                     
                 var reservas = await _context.ReservaConsultorios
-                    .Where(x => x.HoraInicio == reservaViewModel.HoraInicio)
+                    .Where(x => x.HoraInicio == reservaViewModel.HoraInicio
+                    && x.DiaSemana == reservaViewModel.DiaSemana)
                     .Select(x => new
                     {
                         IdEspecialista = x.IdEspecialista
@@ -239,7 +241,7 @@ namespace Backend.Controllers
         // POST: ReservaConsultorio/Create3
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create3([Bind("IdConsultorio,NumeroConsultorio,HoraInicio,IdEspecialista")] ReservaConsultorioViewModel reservaViewModel)
+        public async Task<IActionResult> Create3([Bind("IdConsultorio,DiaSemana,NumeroConsultorio,HoraInicio,IdEspecialista")] ReservaConsultorioViewModel reservaViewModel)
         {
             if (_context.Equipos != null)
             {
@@ -285,7 +287,7 @@ namespace Backend.Controllers
         // POST: ReservaConsultorio/Create4
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create4([Bind("IdConsultorio,HoraInicio,IdEspecialista,IdEquipo")] ReservaConsultorioViewModel reservaViewModel)
+        public async Task<IActionResult> Create4([Bind("IdConsultorio,DiaSemana,HoraInicio,IdEspecialista,IdEquipo")] ReservaConsultorioViewModel reservaViewModel)
         {
             ModelState.Remove("ListaItems");
             ModelState.Remove("NombreEquipo");
@@ -294,7 +296,6 @@ namespace Backend.Controllers
             ModelState.Remove("NumeroConsultorio");
             if (ModelState.IsValid)
             {
-                var fecha = new DateTime();
                 var reservaConsultorio = new ReservaConsultorio
                 {
                     IdConsultorio = reservaViewModel.IdConsultorio,
@@ -302,7 +303,7 @@ namespace Backend.Controllers
                     IdEspecialista = reservaViewModel.IdEspecialista,
                     HoraInicio = reservaViewModel.HoraInicio,
                     HoraFinal = reservaViewModel.HoraInicio.Add(new TimeSpan(0, 30, 0)),
-                    DiaSemana = ((byte)fecha.DayOfWeek),
+                    DiaSemana = ((byte)reservaViewModel.DiaSemana),
                     Disponible = true,
                 };
                 _context.Add(reservaConsultorio);

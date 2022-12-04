@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using _3101_proyecto1.Entities;
-using _3101_proyecto1.Models;
+using Backend.Entities;
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace _3101_proyecto1.Controllers
+namespace Backend.Controllers
 {
     public class ReporteController : Controller
     {

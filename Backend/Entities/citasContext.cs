@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace _3101_proyecto1.Entities
+namespace Backend.Entities
 {
     public partial class citasContext : DbContext
     {
