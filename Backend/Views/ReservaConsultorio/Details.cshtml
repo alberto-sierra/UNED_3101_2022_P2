@@ -1,4 +1,4 @@
-@model _3101_proyecto1.Models.ReservaConsultorioViewModel
+@model Backend.Models.ReservaConsultorioViewModel
 
 @{
     ViewData["Title"] = "Gestión de consultorios";
@@ -17,6 +17,35 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NumeroConsultorio)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DiaSemana)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                var nombreDia = "";
+                switch (Model.DiaSemana)
+                {
+                    case 0:
+                        nombreDia = "Lunes";
+                        break;
+                    case 1:
+                        nombreDia = "Martes";
+                        break;
+                    case 2:
+                        nombreDia = "Miércoles";
+                        break;
+                    case 3:
+                        nombreDia = "Jueves";
+                        break;
+                    case 4:
+                        nombreDia = "Viernes";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            @nombreDia;
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.HoraInicio)

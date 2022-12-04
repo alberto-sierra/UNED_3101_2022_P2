@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace _3101_proyecto1.Models
+namespace Backend.Models
 {
 	public class ReporteEstadisticaViewModel
 	{

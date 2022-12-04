@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace _3101_proyecto1.Models
+namespace Backend.Models
 {
     public partial class ReservaConsultorioViewModel
     {
@@ -35,8 +35,14 @@ namespace _3101_proyecto1.Models
 
         [Required]
         [Display(Name = "Día de la Semana")]
-        [RegularExpression(@"[0-7]{1}$")]
+        [Range(0,4)]
         public byte DiaSemana { get; set; }
+
+        //[Required]
+        //[Display(Name = "Fecha")]
+        //[DataType(DataType.Date)]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        //public DateTime FechaSeleccionada { get; set; }
 
         [Required]
         [Display(Name = "Disponible")]

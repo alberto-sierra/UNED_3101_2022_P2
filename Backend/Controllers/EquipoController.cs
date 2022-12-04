@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using _3101_proyecto1.Entities;
-using _3101_proyecto1.Models;
+using Backend.Entities;
+using Backend.Models;
 
 namespace Backend.Controllers
 {
@@ -73,6 +73,10 @@ namespace Backend.Controllers
                 {
                     Id = x.Id,
                     Nombre = x.Nombre,
+                    Activo = x.Activo,
+                    Serie = x.Serie,
+                    Descripcion = x.Descripcion,
+                    FechaCompra = x.FechaCompra,
                     IdEspecialidad = x.IdEspecialidad,
                     NombreEspecialidad = x.IdEspecialidadNavigation.Nombre
                 })
@@ -102,7 +106,7 @@ namespace Backend.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombre,IdEspecialidad")] EquipoViewModel equipoViewModel)
+        public async Task<IActionResult> Create([Bind("Nombre,IdEspecialidad,Activo,Serie,Descripcion,FechaCompra")] EquipoViewModel equipoViewModel)
         {
             ModelState.Remove("NombreEspecialidad");
             ModelState.Remove("ListaEspecialidad");
@@ -111,6 +115,10 @@ namespace Backend.Controllers
                 var equipo = new Equipo
                 {
                     Nombre = equipoViewModel.Nombre,
+                    Activo = equipoViewModel.Activo,
+                    Serie = equipoViewModel.Serie,
+                    Descripcion = equipoViewModel.Descripcion,
+                    FechaCompra = equipoViewModel.FechaCompra,
                     IdEspecialidad = equipoViewModel.IdEspecialidad
                 };
                 _context.Add(equipo);
@@ -140,6 +148,10 @@ namespace Backend.Controllers
             {
                 Id = equipo.Id,
                 Nombre = equipo.Nombre,
+                Activo = equipo.Activo,
+                Serie = equipo.Serie,
+                Descripcion = equipo.Descripcion,
+                FechaCompra = equipo.FechaCompra,
                 IdEspecialidad = equipo.IdEspecialidad,
                 ListaEspecialidad = getDropDown()
             };
@@ -152,7 +164,7 @@ namespace Backend.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,IdEspecialidad")] EquipoViewModel equipoViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Activo,Serie,Descripcion,FechaCompra,IdEspecialidad")] EquipoViewModel equipoViewModel)
         {
             if (id != equipoViewModel.Id)
             {
@@ -168,6 +180,10 @@ namespace Backend.Controllers
                 {
                     Id = equipoViewModel.Id,
                     Nombre = equipoViewModel.Nombre,
+                    Activo = equipoViewModel.Activo,
+                    Serie = equipoViewModel.Serie,
+                    Descripcion = equipoViewModel.Descripcion,
+                    FechaCompra = equipoViewModel.FechaCompra,
                     IdEspecialidad = equipoViewModel.IdEspecialidad
                 };
 
@@ -217,8 +233,8 @@ namespace Backend.Controllers
             {
                 Id = equipo.Id,
                 Nombre = equipo.Nombre,
-                IdEspecialidad = equipo.IdEspecialidad,
-                ListaEspecialidad = getDropDown()
+                Activo = equipo.Activo,
+                Serie = equipo.Serie
             };
 
             return View(equipoViewModel);

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
-using _3101_proyecto1.Entities;
+using Backend.Entities;
 
-namespace _3101_proyecto1.Models
+namespace Backend.Models
 {
     public partial class PacienteViewModel
     {

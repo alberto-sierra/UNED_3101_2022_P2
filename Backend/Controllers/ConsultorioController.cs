@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using _3101_proyecto1.Entities;
-using _3101_proyecto1.Models;
+using Backend.Entities;
+using Backend.Models;
 
 namespace Backend.Controllers
 {

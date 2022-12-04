@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace _3101_proyecto1.Models
+namespace Backend.Models
 {
     public partial class ReporteConsultorioViewModel
     {

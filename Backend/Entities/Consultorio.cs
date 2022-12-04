@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace _3101_proyecto1.Entities
+namespace Backend.Entities
 {
     [Table("Consultorio")]
     public partial class Consultorio

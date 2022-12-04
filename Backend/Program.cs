@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using _3101_proyecto1.Entities;
+using Backend.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<citasContext>(options =>

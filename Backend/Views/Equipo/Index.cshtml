@@ -1,4 +1,4 @@
-@model IEnumerable<_3101_proyecto1.Models.EquipoViewModel>
+@model IEnumerable<Backend.Models.EquipoViewModel>
 
 @{
     ViewData["Title"] = "Gestión de Equipo Médico";
@@ -37,6 +37,7 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Modificar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Ver Detalle</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
                 </td>
             </tr>

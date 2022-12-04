@@ -1,4 +1,4 @@
-@model _3101_proyecto1.Models.ReservaConsultorioViewModel
+@model Backend.Models.ReservaConsultorioViewModel
 
 @{
     ViewData["Title"] = "Reserva de Consultorios";
@@ -20,6 +20,18 @@
                     <option value="">Seleccione el consultorio</option>
                 </select>
                 <span asp-validation-for="IdConsultorio" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DiaSemana" class="control-label"></label>
+                <select asp-for="DiaSemana" class="form-control">
+                    <option selected value="">Seleccione el día</option>
+                    <option value="0">Lunes</option>
+                    <option value="1">Martes</option>
+                    <option value="2">Miércoles</option>
+                    <option value="3">Jueves</option>
+                    <option value="4">Viernes</option>
+                </select>
+                <span asp-validation-for="DiaSemana" class="text-danger" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Siguiente" class="btn btn-primary" />

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace _3101_proyecto1.Entities
+namespace Backend.Entities
 {
     [Index("Identificacion", Name = "UQ__Especial__D6F931E5DC511E7C", IsUnique = true)]
     public partial class Especialistum
