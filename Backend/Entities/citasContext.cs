@@ -33,6 +33,7 @@ namespace Backend.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Citum>(entity =>
             {
                 entity.HasOne(d => d.IdPacienteNavigation)

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models
 {
@@ -18,6 +19,22 @@ namespace Backend.Models
 
         [Required]
         public int IdEspecialidad { get; set; }
+
+        [StringLength(100)]
+        [Display(Name = "Numero de Activo")]
+        public string? Activo { get; set; }
+
+        [StringLength(100)]
+        [Display(Name = "Numero de Serie")]
+        public string? Serie { get; set; }
+
+        [StringLength(100)]
+        [Display(Name = "Descripción")]
+        public string? Descripcion { get; set; }
+
+        [Display(Name = "Fecha de Compra")]
+        [DataType(DataType.Date)]
+        public DateTime? FechaCompra { get; set; }
 
         [Display(Name = "Especialidad")]
         public string NombreEspecialidad { get; set; }
