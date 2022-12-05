@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Backend.Models.ReporteEquipoViewModel>
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<h1>Reporte de Activos</h1>
+<hr />
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Activo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Serie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCompra)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreEspecialidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroConsultorio)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Activo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Serie)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaCompra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreEspecialidad)
+                </td>
+                <td>
+                    @String.Join(",", item.NumeroConsultorio.ToArray())
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index">Regresar</a>
+<br />
+<a asp-action="DescargaActivos">Descargar Reporte</a>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

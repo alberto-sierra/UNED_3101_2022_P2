@@ -309,6 +309,100 @@ namespace Backend.Controllers
             return resultados;
         }
 
+        // GET: Reporte/Activos
+        public async Task<IActionResult> Activos()
+        {
+            var equipos = await _context.Equipos
+                .Select(x => new ReporteEquipoViewModel
+                {
+                    Id = x.Id,
+                    Nombre = x.Nombre,
+                    Activo = x.Activo,
+                    Serie = x.Serie,
+                    Descripcion = x.Descripcion,
+                    FechaCompra = x.FechaCompra,
+                    NumeroConsultorio = new List<string>()
+                })
+            .ToListAsync();
+
+            var reservas = await _context.ReservaConsultorios
+                .Include(x => x.IdConsultorioNavigation)
+                .Select(x => new
+                {
+                    NumeroConsultorio = x.IdConsultorioNavigation.Numero,
+                    IdEquipo = x.IdEquipo
+                })
+                .ToListAsync();
+
+            foreach (var i1 in equipos)
+            {
+                foreach (var i2 in reservas)
+                {
+                    if (i1.Id == i2.IdEquipo )
+                    {
+                        if (!i1.NumeroConsultorio.Contains(i2.NumeroConsultorio.ToString()))
+                        {
+                            i1.NumeroConsultorio.Add(i2.NumeroConsultorio.ToString());
+                        }
+                    }
+                }
+            }
+
+            return View(equipos);
+        }
+
+        // GET: Reporte/Activos/Descarga
+        [HttpGet("/Reporte/Activos/Descarga")]
+        [Produces("application/json")]
+        public async Task<List<ReporteEquipoViewModel>> DescargaActivos()
+        {
+            var equipos = await _context.Equipos
+                .Select(x => new ReporteEquipoViewModel
+                {
+                    Id = x.Id,
+                    Nombre = x.Nombre,
+                    Activo = x.Activo,
+                    Serie = x.Serie,
+                    Descripcion = x.Descripcion,
+                    FechaCompra = x.FechaCompra,
+                    NumeroConsultorio = new List<string>()
+                })
+            .ToListAsync();
+
+            var reservas = await _context.ReservaConsultorios
+                .Include(x => x.IdConsultorioNavigation)
+                .Select(x => new
+                {
+                    NumeroConsultorio = x.IdConsultorioNavigation.Numero,
+                    IdEquipo = x.IdEquipo
+                })
+                .ToListAsync();
+
+            foreach (var i1 in equipos)
+            {
+                foreach (var i2 in reservas)
+                {
+                    if (i1.Id == i2.IdEquipo)
+                    {
+                        if (!i1.NumeroConsultorio.Contains(i2.NumeroConsultorio.ToString()))
+                        {
+                            i1.NumeroConsultorio.Add(i2.NumeroConsultorio.ToString());
+                        }
+                    }
+                }
+            }
+
+            System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "activos.json",
+                Inline = false
+            };
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+
+            return equipos;
+
+        }
+
     }
 }
 
