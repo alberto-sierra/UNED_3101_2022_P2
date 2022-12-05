@@ -25,13 +25,51 @@ public class CitaController : ControllerBase
     [HttpGet("/Cita/GetAllByDoc/{identificacion}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<IEnumerable<CitumViewModel>> GetCitas(string identificacion)
+    public ActionResult<IEnumerable<CitumViewModel>> GetCitas(string identificacion, bool? idLocal)
     {
         if (identificacion == null)
         {
             return BadRequest(new { error = "Faltan parametros obligatorios" });
         }
-        var paciente = _context.Pacientes
+
+        var pacienteId = new long();
+        var paciente = new PacienteViewModel();
+        paciente = null;
+        var citas = new List<CitumViewModel>();
+
+
+        if (idLocal == true && long.TryParse(identificacion, out pacienteId))
+        {
+            paciente = _context.Pacientes
+            .Where(x => x.Id == pacienteId)
+            .Select(x => new PacienteViewModel
+            {
+                Id = x.Id,
+                Identificacion = x.Identificacion
+            }).SingleOrDefault();
+
+            citas = _context.Cita
+            .Include(x => x.IdPacienteNavigation)
+            .Include(x => x.IdReservaNavigation)
+            .Where(x => x.IdPacienteNavigation.Id == pacienteId)
+            .Select(x => new CitumViewModel
+            {
+                Id = x.Id,
+                IdPaciente = x.IdPaciente,
+                IdReserva = x.IdReserva,
+                HoraInicio = x.Fecha.TimeOfDay,
+                Fecha = x.Fecha,
+                NombreEspecialista = x.IdReservaNavigation.IdEspecialistaNavigation.Nombre,
+                IdEspecialista = x.IdReservaNavigation.IdEspecialista,
+                NombrePaciente = x.IdPacienteNavigation.NombreCompleto,
+                Especialidad = x.IdReservaNavigation.IdEspecialistaNavigation.IdEspecialidadNavigation.Nombre,
+                PrecioConsulta = x.PrecioConsulta
+            })
+            .ToList();
+        }
+        else
+        {
+            paciente = _context.Pacientes
             .Where(x => x.Identificacion == identificacion)
             .Select(x => new PacienteViewModel
             {
@@ -39,23 +77,27 @@ public class CitaController : ControllerBase
                 Identificacion = x.Identificacion
             }).SingleOrDefault();
 
-        var citas = _context.Cita
-        .Include(x => x.IdPacienteNavigation)
-        .Include(x => x.IdReservaNavigation)
-        .Where(x => x.IdPacienteNavigation.Identificacion == identificacion)
-        .Select(x => new CitumViewModel
-        {
-            Id = x.Id,
-            IdPaciente = x.IdPaciente,
-            IdReserva = x.IdReserva,
-            HoraInicio = x.Fecha.TimeOfDay,
-            NombreEspecialista = x.IdReservaNavigation.IdEspecialistaNavigation.Nombre,
-            IdEspecialista = x.IdReservaNavigation.IdEspecialista,
-            NombrePaciente = x.IdPacienteNavigation.NombreCompleto,
-            Especialidad = x.IdReservaNavigation.IdEspecialistaNavigation.IdEspecialidadNavigation.Nombre,
-            PrecioConsulta = x.PrecioConsulta
-        })
-        .ToList();
+            citas = _context.Cita
+            .Include(x => x.IdPacienteNavigation)
+            .Include(x => x.IdReservaNavigation)
+            .Where(x => x.IdPacienteNavigation.Identificacion == identificacion)
+            .Select(x => new CitumViewModel
+            {
+                Id = x.Id,
+                IdPaciente = x.IdPaciente,
+                IdReserva = x.IdReserva,
+                HoraInicio = x.Fecha.TimeOfDay,
+                Fecha = x.Fecha,
+                NombreEspecialista = x.IdReservaNavigation.IdEspecialistaNavigation.Nombre,
+                IdEspecialista = x.IdReservaNavigation.IdEspecialista,
+                NombrePaciente = x.IdPacienteNavigation.NombreCompleto,
+                Especialidad = x.IdReservaNavigation.IdEspecialistaNavigation.IdEspecialidadNavigation.Nombre,
+                PrecioConsulta = x.PrecioConsulta
+            })
+            .ToList();
+        }
+
+        
 
         if (citas.Count == 0)
         {
@@ -95,6 +137,7 @@ public class CitaController : ControllerBase
                 NombreEspecialista = x.IdReservaNavigation.IdEspecialistaNavigation.Nombre,
                 IdEspecialista = x.IdReservaNavigation.IdEspecialista,
                 HoraInicio = x.Fecha.TimeOfDay,
+                Fecha = x.Fecha,
                 Especialidad = x.IdReservaNavigation.IdEspecialistaNavigation.IdEspecialidadNavigation.Nombre,
                 PrecioConsulta = x.IdReservaNavigation.IdEspecialistaNavigation.PrecioConsulta
             })
@@ -110,10 +153,16 @@ public class CitaController : ControllerBase
 
     [HttpGet()]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<IEnumerable<CitumViewModel>> GetHora()
+    public ActionResult<IEnumerable<CitumViewModel>> GetHora(DateTime? fecha)
     {
+        if (fecha == null || fecha <= DateTime.Now)
+        {
+            fecha = new DateTime();
+        }
+
         var citumViewModel = _context.ReservaConsultorios
             .Where(x => x.Disponible == true)
+            .Where(x => x.DiaSemana == (int)fecha.Value.DayOfWeek)
             .Include(x => x.IdConsultorioNavigation)
             .Include(x => x.IdEspecialistaNavigation)
             .Select(x => new CitumViewModel
@@ -201,9 +250,7 @@ public class CitaController : ControllerBase
                     Fecha = DateTime.Today + reserva.HoraInicio
                 };
 
-                reserva.Disponible = false;
                 _context.Add(nuevaCita);
-                _context.Update(reserva);
                 await _context.SaveChangesAsync();
 
                 var citumViewModel = new CitumViewModel
@@ -215,6 +262,7 @@ public class CitaController : ControllerBase
                     IdEspecialista = reserva.IdEspecialista,
                     PrecioConsulta = nuevaCita.PrecioConsulta,
                     HoraInicio = reserva.HoraInicio,
+                    Fecha = nuevaCita.Fecha,
                     NombreEspecialista = reserva.IdEspecialistaNavigation.Nombre,
                     Especialidad = reserva.IdEspecialistaNavigation.IdEspecialidadNavigation.Nombre,
                     NombrePaciente = nuevaCita.IdPacienteNavigation.NombreCompleto

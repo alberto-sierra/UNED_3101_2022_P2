@@ -35,14 +35,8 @@ namespace Backend.Models
 
         [Required]
         [Display(Name = "Día de la Semana")]
-        [Range(0,4)]
+        [Range(1,5)]
         public byte DiaSemana { get; set; }
-
-        //[Required]
-        //[Display(Name = "Fecha")]
-        //[DataType(DataType.Date)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-        //public DateTime FechaSeleccionada { get; set; }
 
         [Required]
         [Display(Name = "Disponible")]

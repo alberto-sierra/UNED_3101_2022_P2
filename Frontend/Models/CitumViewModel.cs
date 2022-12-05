@@ -22,6 +22,11 @@ namespace _3101_proyecto1.FrontEnd.Models
         public TimeSpan HoraInicio { get; set; }
 
         [Required]
+        [Display(Name = "Fecha")]
+        [DataType(DataType.Date)]
+        public DateTime Fecha { get; set; }
+
+        [Required]
         [Display(Name = "Especialista")]
         public string NombreEspecialista { get; set; }
         public int IdEspecialista { get; set; }

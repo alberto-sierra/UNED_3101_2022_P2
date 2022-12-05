@@ -16,6 +16,7 @@ namespace _3101_proyecto1.Api.Models
         [Required]
         public int IdReserva { get; set; }
         public TimeSpan HoraInicio { get; set; }
+        public DateTime Fecha { get; set; }
         public string NombreEspecialista { get; set; }
         public int IdEspecialista { get; set; }
         public string NombrePaciente { get; set; }

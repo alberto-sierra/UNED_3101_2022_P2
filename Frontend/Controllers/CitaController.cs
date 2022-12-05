@@ -31,7 +31,7 @@ namespace Frontend.Controllers
             {
                 ViewBag.mensaje = TempData["mensaje"].ToString();
             }
-            
+
             return View();
         }
 
@@ -75,51 +75,82 @@ namespace Frontend.Controllers
         }
 
         // GET: Cita/Create/1
-        [HttpGet]
-        public IActionResult Create([Bind("Id")]int? id)
+        public ActionResult Create(int id)
+        {
+            return View(new CitumViewModel { IdPaciente = id, Fecha = DateTime.Today });
+        }
+
+        // POST: Cita/Create/1
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create1([Bind("IdPaciente,Fecha")] CitumViewModel citumViewModel)
         {
             try
             {
+                var citasDisponibles = new List<CitumViewModel>();
+                var citasProgramadas = new List<CitumViewModel>();
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(_config["ApiURL"] + "/Cita").Result;
+                var response = client.GetAsync(_config["ApiURL"] + "/Cita?Fecha=" + citumViewModel.Fecha.AddMinutes(15)).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
-                    var citumViewModelList = JsonConvert.DeserializeObject<List<CitumViewModel>>(responseString);
-                    if (citumViewModelList == null || citumViewModelList.Count == 0)
+                    citasDisponibles = JsonConvert.DeserializeObject<List<CitumViewModel>>(responseString);
+
+                    if (citasDisponibles == null || citasDisponibles.Count == 0)
                     {
                         TempData["mensaje"] = "No hay disponibilidad para nuevas citas.";
                         return RedirectToAction(nameof(Index));
                     }
-
-                    var listaItems = citumViewModelList
-                        .Select(x => new SelectListItem
-                        {
-                            Value = x.HoraInicio.ToString(),
-                            Text = x.HoraInicio.ToString(@"hh\:mm")
-                        })
-                        .DistinctBy(x => x.Value)
-                        .ToList();
-
-                    
-
-                    var citumViewModel = new CitumViewModel
-                    {
-                        IdPaciente = (long)id,
-                        ListaItems = listaItems
-                    };
-
-                    return View(citumViewModel);
+                }
+                else
+                {
+                    throw new Exception();
                 }
 
-                throw new Exception();
-        }
+                response = client.GetAsync(_config["ApiURL"] + "/Cita/GetAllByDoc/" + citumViewModel.IdPaciente + "?idLocal=true").Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    citasProgramadas = JsonConvert.DeserializeObject<List<CitumViewModel>>(responseString);
+                    if (citasProgramadas != null)
+                    {
+                        if (citasProgramadas.Count == 1 && citasProgramadas[0].Id == 0)
+                        {
+                            // Eliminar horas de citas programadas de totales disponibles
+                            foreach (var citaDisponible in citasDisponibles)
+                            {
+                                foreach (var citaProgramada in citasProgramadas)
+                                {
+                                    if (citaProgramada.HoraInicio == citaDisponible.HoraInicio)
+                                    {
+                                        citasProgramadas.Remove(citaProgramada);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var listaItems = citasDisponibles
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.HoraInicio.ToString(),
+                        Text = x.HoraInicio.ToString(@"hh\:mm")
+                    })
+                    .DistinctBy(x => x.Value)
+                    .ToList();
+
+                citumViewModel.ListaItems = listaItems;
+
+                return View(citumViewModel);
+
+            }
             catch
             {
                 TempData["mensaje"] = "Error de comunicación con el API.";
                 return RedirectToAction(nameof(Index));
-    }
-}
+            }
+        }
 
         // POST: Cita/Create2
         [HttpPost]
@@ -143,10 +174,10 @@ namespace Frontend.Controllers
                     var listaItems = citumViewModelList
                         .Where(x => x.HoraInicio == citumViewModel.HoraInicio)
                         .Select(x => new SelectListItem
-                    {
-                        Value = x.IdEspecialidad.ToString(),
-                        Text = $"{x.Especialidad}"
-                    })
+                        {
+                            Value = x.IdEspecialidad.ToString(),
+                            Text = $"{x.Especialidad}"
+                        })
                         .DistinctBy(x => x.Value)
                         .ToList();
 
@@ -222,7 +253,7 @@ namespace Frontend.Controllers
             try
             {
                 HttpClient client = new HttpClient();
-                var response = client.PostAsJsonAsync<CitumViewModel>(_config["ApiURL"] + "/Cita",citumViewModel).Result;
+                var response = client.PostAsJsonAsync<CitumViewModel>(_config["ApiURL"] + "/Cita", citumViewModel).Result;
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
