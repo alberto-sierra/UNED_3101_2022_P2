@@ -80,7 +80,7 @@ namespace Frontend.Controllers
             return View(new CitumViewModel { IdPaciente = id, Fecha = DateTime.Today });
         }
 
-        // POST: Cita/Create/1
+        // POST: Cita/Create1
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create1([Bind("IdPaciente,Fecha")] CitumViewModel citumViewModel)
@@ -89,10 +89,24 @@ namespace Frontend.Controllers
             {
                 var citasDisponibles = new List<CitumViewModel>();
                 var citasProgramadas = new List<CitumViewModel>();
+                var nuevaFecha = new DateTime();
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(_config["ApiURL"] +
+                HttpResponseMessage response = new HttpResponseMessage();
+
+                if (citumViewModel.Fecha.Date > DateTime.Now.Date)
+                {
+                    response = client.GetAsync(_config["ApiURL"] +
                     "/Cita?idPaciente=" + citumViewModel.IdPaciente +
-                    "&Fecha=" + citumViewModel.Fecha.AddMinutes(15)).Result;
+                    "&Fecha=" + citumViewModel.Fecha).Result;
+                }
+                else
+                {
+                    nuevaFecha = (DateTime.Now).AddMinutes(15);
+                    response = client.GetAsync(_config["ApiURL"] +
+                    "/Cita?idPaciente=" + citumViewModel.IdPaciente +
+                    "&Fecha=" + nuevaFecha).Result;
+                }
+                
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
@@ -119,7 +133,10 @@ namespace Frontend.Controllers
                     .ToList();
 
                 citumViewModel.ListaItems = listaItems;
-
+                if (nuevaFecha.Date != citumViewModel.Fecha.Date)
+                {
+                    citumViewModel.Fecha = nuevaFecha;
+                }
                 return View(citumViewModel);
 
             }
@@ -240,13 +257,11 @@ namespace Frontend.Controllers
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
                     var citumViewModelList = JsonConvert.DeserializeObject<CitumViewModel>(responseString);
-                    if (citumViewModelList == null)
+                    if (citumViewModelList != null)
                     {
                         TempData["mensaje"] = "Cita registrada con éxito.";
                         return RedirectToAction(nameof(Index));
                     }
-
-                    return View(citumViewModel);
                 }
 
                 throw new Exception();
@@ -301,8 +316,11 @@ namespace Frontend.Controllers
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
                     var deleteStatus = JsonConvert.DeserializeObject(responseString);
-                    TempData["mensaje"] = "Cita eliminada con éxito.";
-                    return RedirectToAction(nameof(Index));
+                    if (deleteStatus != null)
+                    {
+                        TempData["mensaje"] = "Cita eliminada con éxito.";
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 throw new Exception();
             }

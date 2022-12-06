@@ -3,6 +3,7 @@ using _3101_proyecto1.Api.Data;
 using _3101_proyecto1.Api.Entities;
 using _3101_proyecto1.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace API.Controllers;
 
@@ -157,8 +158,9 @@ public class CitaController : ControllerBase
     {
         if (fecha == null || fecha <= DateTime.Now)
         {
-            fecha = new DateTime();
+            fecha = DateTime.Now;
         }
+
         var disponiblePaciente = new List<CitumViewModel>();
         var citasDisponibles = _context.ReservaConsultorios
             .Where(x => x.Disponible == true)
@@ -169,6 +171,7 @@ public class CitaController : ControllerBase
             {
                 IdReserva = x.Id,
                 HoraInicio = x.HoraInicio,
+                Fecha = fecha.Value,
                 NombreEspecialista = x.IdEspecialistaNavigation.Nombre,
                 IdEspecialista = x.IdEspecialista,
                 IdEspecialidad = x.IdEspecialistaNavigation.IdEspecialidad,
@@ -183,6 +186,7 @@ public class CitaController : ControllerBase
         {
             var citasProgramadas = _context.Cita
             .Where(x => x.IdPaciente == idPaciente)
+            .Where(x => x.Fecha >= fecha)
             .Select(x => new CitumViewModel
             {
                 Id = x.Id,
@@ -327,16 +331,6 @@ public class CitaController : ControllerBase
                 return Ok(new { deleted = 0 });
             }
 
-            var reserva = _context.ReservaConsultorios
-                .FirstOrDefault(m => m.Id == citumViewModel.IdReserva);
-
-            if (reserva == null)
-            {
-                return BadRequest(new { error = "No existe profesional asignado a la cita" });
-            }
-
-            reserva.Disponible = true;
-            _context.ReservaConsultorios.Update(reserva);
             _context.Cita.Remove(citumViewModel);
             _context.SaveChangesAsync();
             return Ok(new { deleted = citumViewModel.Id });

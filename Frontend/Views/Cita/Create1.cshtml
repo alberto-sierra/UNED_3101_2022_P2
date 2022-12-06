@@ -7,9 +7,19 @@
 <h2>Nueva Cita - Paso 1</h2>
 @if (ViewBag.mensaje != null)
 {
-    <h4 class="danger">@ViewBag.mensaje</h4>
+    <div class="text-danger"><h5>@ViewBag.mensaje</h5></div>
 }
 <hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+    </dl>
+</div>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create2">

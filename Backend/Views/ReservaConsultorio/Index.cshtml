@@ -7,7 +7,7 @@
 <h1>Reserva de Consultorios</h1>
 @if (ViewBag.mensaje != null)
 {
-    <h4 class="danger">@ViewBag.mensaje</h4>
+    <div class="text-danger"><h5>@ViewBag.mensaje</h5></div>
 }
 <p>
     <a asp-action="Create">Nueva Reserva</a>
@@ -39,19 +39,19 @@
                         var nombreDia = "";
                         switch (item.DiaSemana)
                         {
-                            case 0:
+                            case 1:
                                 nombreDia = "Lunes";
                                 break;
-                            case 1:
+                            case 2:
                                 nombreDia = "Martes";
                                 break;
-                            case 2:
+                            case 3:
                                 nombreDia = "Miércoles";
                                 break;
-                            case 3:
+                            case 4:
                                 nombreDia = "Jueves";
                                 break;
-                            case 4:
+                            case 5:
                                 nombreDia = "Viernes";
                                 break;
                             default:

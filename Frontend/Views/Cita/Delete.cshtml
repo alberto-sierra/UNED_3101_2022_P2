@@ -7,7 +7,7 @@
 <h3>Confirmación</h3>
 @if (ViewBag.error != null)
 {
-    <h4 class="danger">@ViewBag.error</h4>
+    <div class="text-danger"><h5>@ViewBag.mensaje</h5></div>
     <a asp-action="Index">Regresar</a>
 }
 else

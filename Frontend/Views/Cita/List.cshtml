@@ -7,7 +7,7 @@
 <h1>Mis Citas</h1>
 @if (ViewBag.mensaje != null)
 {
-    <h4 class="danger">@ViewBag.mensaje</h4>
+    <div class="text-danger"><h5>@ViewBag.mensaje</h5></div>
 }
 @if (ViewBag.IdPaciente != null)
 {
@@ -18,6 +18,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.HoraInicio)
             </th>
@@ -30,17 +33,24 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HoraInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NombreEspecialista)
-                </td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Cita</a>
-                </td>
-            </tr>
+            @if (item.Fecha >= DateTime.Now)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoraInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreEspecialista)
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Cita</a>
+                    </td>
+                </tr>
+            }
+
         }
     </tbody>
 </table>
