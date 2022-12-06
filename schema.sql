@@ -57,6 +57,10 @@ CREATE TABLE citas.dbo.Equipo (
 	Id int IDENTITY(1,1) NOT NULL,
 	Nombre varchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	IdEspecialidad int NOT NULL,
+	Activo varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Serie varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Descripcion varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	FechaCompra datetime NULL,
 	CONSTRAINT PK__Equipo__3214EC079D6312D0 PRIMARY KEY (Id),
 	CONSTRAINT FK__Equipo__IdEspeci__571DF1D5 FOREIGN KEY (IdEspecialidad) REFERENCES citas.dbo.Especialidad(Id)
 );
