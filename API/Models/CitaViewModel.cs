@@ -14,5 +14,8 @@ namespace _3101_proyecto1.Api.Models
 
         [Required]
         public int IdReserva { get; set; }
+
+        [Required]
+        public DateTime Fecha { get; set; }
     }
 }

@@ -90,7 +90,9 @@ namespace Frontend.Controllers
                 var citasDisponibles = new List<CitumViewModel>();
                 var citasProgramadas = new List<CitumViewModel>();
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(_config["ApiURL"] + "/Cita?Fecha=" + citumViewModel.Fecha.AddMinutes(15)).Result;
+                var response = client.GetAsync(_config["ApiURL"] +
+                    "/Cita?idPaciente=" + citumViewModel.IdPaciente +
+                    "&Fecha=" + citumViewModel.Fecha.AddMinutes(15)).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
@@ -105,30 +107,6 @@ namespace Frontend.Controllers
                 else
                 {
                     throw new Exception();
-                }
-
-                response = client.GetAsync(_config["ApiURL"] + "/Cita/GetAllByDoc/" + citumViewModel.IdPaciente + "?idLocal=true").Result;
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var responseString = response.Content.ReadAsStringAsync().Result;
-                    citasProgramadas = JsonConvert.DeserializeObject<List<CitumViewModel>>(responseString);
-                    if (citasProgramadas != null)
-                    {
-                        if (citasProgramadas.Count == 1 && citasProgramadas[0].Id == 0)
-                        {
-                            // Eliminar horas de citas programadas de totales disponibles
-                            foreach (var citaDisponible in citasDisponibles)
-                            {
-                                foreach (var citaProgramada in citasProgramadas)
-                                {
-                                    if (citaProgramada.HoraInicio == citaDisponible.HoraInicio)
-                                    {
-                                        citasProgramadas.Remove(citaProgramada);
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
                 var listaItems = citasDisponibles
@@ -155,12 +133,14 @@ namespace Frontend.Controllers
         // POST: Cita/Create2
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create2([Bind("IdPaciente, HoraInicio")] CitumViewModel citumViewModel)
+        public IActionResult Create2([Bind("IdPaciente,HoraInicio,Fecha")] CitumViewModel citumViewModel)
         {
             try
             {
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(_config["ApiURL"] + "/Cita").Result;
+                var response = client.GetAsync(_config["ApiURL"] +
+                    "/Cita?idPaciente=" + citumViewModel.IdPaciente +
+                    "&Fecha=" + citumViewModel.Fecha.Add(citumViewModel.HoraInicio)).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
@@ -197,12 +177,14 @@ namespace Frontend.Controllers
         // POST: Cita/Create3
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create3([Bind("IdPaciente, HoraInicio, IdEspecialidad")] CitumViewModel citumViewModel)
+        public IActionResult Create3([Bind("IdPaciente,HoraInicio,Fecha,IdEspecialidad")] CitumViewModel citumViewModel)
         {
             try
             {
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(_config["ApiURL"] + "/Cita").Result;
+                var response = client.GetAsync(_config["ApiURL"] +
+                    "/Cita?idPaciente=" + citumViewModel.IdPaciente +
+                    "&Fecha=" + citumViewModel.Fecha.Add(citumViewModel.HoraInicio)).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = response.Content.ReadAsStringAsync().Result;
@@ -248,7 +230,7 @@ namespace Frontend.Controllers
         // POST: Cita/Create4
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create4([Bind("IdPaciente, IdReserva")] CitumViewModel citumViewModel)
+        public IActionResult Create4([Bind("IdPaciente,Fecha,IdReserva")] CitumViewModel citumViewModel)
         {
             try
             {

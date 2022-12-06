@@ -153,14 +153,14 @@ public class CitaController : ControllerBase
 
     [HttpGet()]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<IEnumerable<CitumViewModel>> GetHora(DateTime? fecha)
+    public ActionResult<IEnumerable<CitumViewModel>> GetHora(DateTime? fecha, long? idPaciente)
     {
         if (fecha == null || fecha <= DateTime.Now)
         {
             fecha = new DateTime();
         }
-
-        var citumViewModel = _context.ReservaConsultorios
+        var disponiblePaciente = new List<CitumViewModel>();
+        var citasDisponibles = _context.ReservaConsultorios
             .Where(x => x.Disponible == true)
             .Where(x => x.DiaSemana == (int)fecha.Value.DayOfWeek)
             .Include(x => x.IdConsultorioNavigation)
@@ -177,12 +177,42 @@ public class CitaController : ControllerBase
             })
             .ToList();
 
-        if (citumViewModel == null)
+        disponiblePaciente = new List<CitumViewModel>(citasDisponibles);
+
+        if (idPaciente != null)
+        {
+            var citasProgramadas = _context.Cita
+            .Where(x => x.IdPaciente == idPaciente)
+            .Select(x => new CitumViewModel
+            {
+                Id = x.Id,
+                HoraInicio = x.Fecha.TimeOfDay,
+                Fecha = x.Fecha,
+            })
+            .ToList();
+
+            if (citasProgramadas != null)
+            {
+                // Eliminar horas de citas programadas de disponibles
+                foreach (var citaDisponible in citasDisponibles)
+                {
+                    foreach (var citaProgramada in citasProgramadas)
+                    {
+                        if (citaProgramada.HoraInicio == citaDisponible.HoraInicio)
+                        {
+                            disponiblePaciente.Remove(citaDisponible);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (disponiblePaciente == null)
         {
             return Ok(new object[] { new CitumViewModel { } });
         }
 
-        return Ok(citumViewModel);
+        return Ok(disponiblePaciente);
     }
 
     [HttpGet("Hora/{id}")]
@@ -216,7 +246,7 @@ public class CitaController : ControllerBase
     [HttpPost()]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody][Bind("IdPaciente,IdReserva")] CitaViewModel citaViewModel)
+    public async Task<IActionResult> Create([FromBody][Bind("IdPaciente,Fecha,IdReserva")] CitaViewModel citaViewModel)
     {
         if (ModelState.IsValid)
         {
@@ -247,7 +277,7 @@ public class CitaController : ControllerBase
                     IdPaciente = citaViewModel.IdPaciente,
                     IdReserva = citaViewModel.IdReserva,
                     PrecioConsulta = reserva.IdEspecialistaNavigation.PrecioConsulta,
-                    Fecha = DateTime.Today + reserva.HoraInicio
+                    Fecha = citaViewModel.Fecha + reserva.HoraInicio
                 };
 
                 _context.Add(nuevaCita);
