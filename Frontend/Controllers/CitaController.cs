@@ -89,7 +89,7 @@ namespace Frontend.Controllers
             {
                 var citasDisponibles = new List<CitumViewModel>();
                 var citasProgramadas = new List<CitumViewModel>();
-                var nuevaFecha = new DateTime();
+                var nuevaFecha = DateTime.Today;
                 HttpClient client = new HttpClient();
                 HttpResponseMessage response = new HttpResponseMessage();
 
@@ -102,6 +102,7 @@ namespace Frontend.Controllers
                 else
                 {
                     nuevaFecha = (DateTime.Now).AddMinutes(15);
+                    citumViewModel.Fecha = nuevaFecha;
                     response = client.GetAsync(_config["ApiURL"] +
                     "/Cita?idPaciente=" + citumViewModel.IdPaciente +
                     "&Fecha=" + nuevaFecha).Result;
@@ -133,10 +134,7 @@ namespace Frontend.Controllers
                     .ToList();
 
                 citumViewModel.ListaItems = listaItems;
-                if (nuevaFecha.Date != citumViewModel.Fecha.Date)
-                {
-                    citumViewModel.Fecha = nuevaFecha;
-                }
+
                 return View(citumViewModel);
 
             }
